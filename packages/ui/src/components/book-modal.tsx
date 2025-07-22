@@ -5,27 +5,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import BookForm, { type Book } from "./book-form";
 
-function Modal({
+function BookModal({
   open,
   onOpenChange,
+  book,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  book?: Book;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your account and
-            remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>{book ? "Edit book" : "Add book"}</DialogTitle>
+          <DialogDescription>A form for books</DialogDescription>
+          <BookForm book={book} />
         </DialogHeader>
       </DialogContent>
     </Dialog>
   );
 }
 
-export default Modal;
+export default BookModal;

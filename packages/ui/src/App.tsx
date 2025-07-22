@@ -16,9 +16,10 @@ import {
 import { Button } from "./components/ui/button";
 import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
-import Modal from "./components/modal";
+import BookModal from "./components/book-modal";
+import { type Book } from "./components/book-form";
 
-const testData = [
+const testData: Book[] = [
   {
     id: 1,
     title: "Love in the Time of Cholera",
@@ -38,13 +39,22 @@ const testData = [
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentBook, setCurrentBook] = useState<Book>();
+
   return (
     <div className="w-full flex justify-center h-screen bg-gray-100">
-      <Modal open={modalOpen} onOpenChange={setModalOpen} />
+      <BookModal open={modalOpen} onOpenChange={setModalOpen} book={currentBook} />
       <div className="w-3/4 p-8 bg-white">
         <div className="flex justify-between pb-8">
           <h1 className="text-2xl">Books</h1>
-          <Button onClick={() => setModalOpen(true)}>Add Book</Button>
+          <Button
+            onClick={() => {
+              setModalOpen(true);
+              setCurrentBook(undefined);
+            }}
+          >
+            Add Book
+          </Button>
         </div>
         <Table>
           <TableHeader>
@@ -67,7 +77,12 @@ function App() {
                       <EllipsisIcon />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => setModalOpen(true)}>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setModalOpen(true);
+                          setCurrentBook(book);
+                        }}
+                      >
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem>Delete</DropdownMenuItem>
