@@ -18,6 +18,7 @@ import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
 import BookModal from "./components/book-modal";
 import { type Book } from "./components/book-form";
+import DeleteBookDialog from "./components/delete-book-dialog";
 
 const testData: Book[] = [
   {
@@ -40,10 +41,18 @@ const testData: Book[] = [
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentBook, setCurrentBook] = useState<Book>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   return (
     <div className="w-full flex justify-center h-screen bg-gray-100">
       <BookModal open={modalOpen} onOpenChange={setModalOpen} book={currentBook} />
+      {currentBook && (
+        <DeleteBookDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          book={currentBook}
+        />
+      )}
       <div className="w-3/4 p-8 bg-white">
         <div className="flex justify-between pb-8">
           <h1 className="text-2xl">Books</h1>
@@ -85,7 +94,14 @@ function App() {
                       >
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setDeleteDialogOpen(true);
+                          setCurrentBook(book);
+                        }}
+                      >
+                        Delete
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
