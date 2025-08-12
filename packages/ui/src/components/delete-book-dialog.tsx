@@ -9,6 +9,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Book } from "./book-form";
+import { useMutation } from "@tanstack/react-query";
+import { deleteBook } from "@/data/books";
+import { queryClient } from "@/main";
 
 interface DeleteBookDialogProps {
   book: Book;
@@ -17,6 +20,17 @@ interface DeleteBookDialogProps {
 }
 
 function DeleteBookDialog({ book, ...props }: DeleteBookDialogProps) {
+  const deleteBookMutation = useMutation({
+    mutationFn: deleteBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+    },
+  });
+
+  const handleClick = () => {
+    deleteBookMutation.mutate(book.id!);
+  };
+
   return (
     <AlertDialog {...props}>
       <AlertDialogContent>
@@ -28,7 +42,7 @@ function DeleteBookDialog({ book, ...props }: DeleteBookDialogProps) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Confirm</AlertDialogAction>
+          <AlertDialogAction onClick={handleClick}>Confirm</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -19,6 +19,8 @@ import { useState } from "react";
 import BookModal from "./components/book-modal";
 import { type Book } from "./components/book-form";
 import DeleteBookDialog from "./components/delete-book-dialog";
+import { useQuery } from "@tanstack/react-query";
+import { fetchBooks } from "./data/books";
 
 const testData: Book[] = [
   {
@@ -45,6 +47,12 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentBook, setCurrentBook] = useState<Book>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { data: books } = useQuery<Array<Book>>({
+    queryKey: ["books"],
+    queryFn: fetchBooks,
+    initialData: [],
+  });
 
   return (
     <div className="w-full flex justify-center h-screen bg-gray-100">
@@ -79,8 +87,8 @@ function App() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {testData.map((book) => (
-              <TableRow>
+            {books.map((book) => (
+              <TableRow key={book.id}>
                 <TableCell className="font-medium">{book.id}</TableCell>
                 <TableCell>{book.title}</TableCell>
                 <TableCell>{book.author}</TableCell>

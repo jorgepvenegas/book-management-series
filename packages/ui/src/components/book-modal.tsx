@@ -22,7 +22,7 @@ function BookModal({
         <DialogHeader>
           <DialogTitle>{book ? "Edit book" : "Add book"}</DialogTitle>
           <DialogDescription>A form for books</DialogDescription>
-          <BookForm book={book} />
+          <BookForm onOpenChange={onOpenChange} book={book} />
         </DialogHeader>
       </DialogContent>
     </Dialog>

@@ -4,14 +4,17 @@ import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { booksTable } from "./db/schema.js";
 import { eq } from "drizzle-orm";
+import { cors } from "hono/cors";
 
 const app = new Hono();
+
+app.use(cors());
 
 const db = drizzle(process.env.DATABASE_URL!);
 
 app.get("/books", async (c) => {
   const books = await db.select().from(booksTable);
-  return c.json({ books }, { status: 200 });
+  return c.json(books, { status: 200 });
 });
 
 app.get("/book/:bookId", async (c) => {
@@ -23,11 +26,7 @@ app.get("/book/:bookId", async (c) => {
     .where(eq(booksTable.id, bookId))
     .limit(1);
 
-  if (books.length > 0) {
-    return c.json({ book: books[0] }, { status: 200 });
-  }
-
-  return c.json({ book: {} }, { status: 200 });
+  return c.json(books, { status: 200 });
 });
 
 app.post("/book", async (c) => {
@@ -36,6 +35,7 @@ app.post("/book", async (c) => {
   const newBook: typeof booksTable.$inferInsert = {
     title: body.title,
     year: body.year,
+    author: body.author,
   };
 
   const result = await db.insert(booksTable).values(newBook).returning();
@@ -53,7 +53,14 @@ app.put("/book/:bookId", async (c) => {
     .where(eq(booksTable.id, bookId))
     .returning();
 
-  return c.json({ book: updatedBook }, { status: 200 });
+  return c.json(updatedBook, { status: 200 });
+});
+
+app.delete("/book/:bookId", async (c) => {
+  const bookId = Number(c.req.param("bookId"));
+  const deletedBook = await db.delete(booksTable).where(eq(booksTable.id, bookId));
+
+  return c.json(deletedBook, { status: 200 });
 });
 
 serve(

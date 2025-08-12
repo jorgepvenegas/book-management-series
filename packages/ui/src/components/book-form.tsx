@@ -12,6 +12,9 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { submitBook, updateBook } from "@/data/books";
+import { queryClient } from "@/main";
 
 const bookSchema = z.object({
   id: z.optional(z.number()),
@@ -19,16 +22,17 @@ const bookSchema = z.object({
     message: "Title should be at least 1 character",
   }),
   author: z.string().min(10).max(200),
-  year: z.number(),
+  year: z.coerce.number(),
 });
 
 export type Book = z.infer<typeof bookSchema>;
 
 interface BookFormProps {
   book?: Book;
+  onOpenChange: (open: boolean) => void;
 }
 
-function BookForm({ book }: BookFormProps) {
+function BookForm({ book, onOpenChange }: BookFormProps) {
   const bookForm = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -42,8 +46,37 @@ function BookForm({ book }: BookFormProps) {
     bookForm.reset(book);
   }, [book]);
 
+  const createBookMutation = useMutation({
+    mutationFn: submitBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      onOpenChange(false);
+    },
+  });
+
+  const updateBookMutation = useMutation({
+    mutationFn: updateBook,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] });
+      onOpenChange(false);
+    },
+  });
+
   const onSubmit = (values: z.infer<typeof bookSchema>) => {
-    console.log(values);
+    if (values.id) {
+      updateBookMutation.mutate({
+        author: values.author,
+        id: values.id,
+        title: values.title,
+        year: values.year,
+      });
+    } else {
+      createBookMutation.mutate({
+        author: values.author,
+        title: values.title,
+        year: values.year,
+      });
+    }
   };
 
   return (
