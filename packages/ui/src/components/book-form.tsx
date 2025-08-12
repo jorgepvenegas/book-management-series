@@ -19,6 +19,7 @@ const bookSchema = z.object({
     message: "Title should be at least 1 character",
   }),
   author: z.string().min(10).max(200),
+  year: z.number(),
 });
 
 export type Book = z.infer<typeof bookSchema>;
@@ -69,6 +70,19 @@ function BookForm({ book }: BookFormProps) {
               <FormLabel>Author</FormLabel>
               <FormControl>
                 <Input placeholder="Author" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={bookForm.control}
+          name="year"
+          render={({ field }) => (
+            <FormItem className="py-3">
+              <FormLabel>Year</FormLabel>
+              <FormControl>
+                <Input placeholder="1998" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

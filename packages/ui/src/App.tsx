@@ -24,16 +24,19 @@ const testData: Book[] = [
   {
     id: 1,
     title: "Love in the Time of Cholera",
+    year: 2000,
     author: "Gabriel García Márquez",
   },
   {
     id: 2,
     title: "Gulliver’s Travels",
+    year: 2000,
     author: "Jonathan Swift",
   },
   {
     id: 3,
     title: "To the Lighthouse",
+    year: 2020,
     author: "Virginia Woolf",
   },
 ];
@@ -71,6 +74,7 @@ function App() {
               <TableHead className="w-[100px]">Id</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Author</TableHead>
+              <TableHead>Year</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -80,6 +84,7 @@ function App() {
                 <TableCell className="font-medium">{book.id}</TableCell>
                 <TableCell>{book.title}</TableCell>
                 <TableCell>{book.author}</TableCell>
+                <TableCell>{book.year}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger>
