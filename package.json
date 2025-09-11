@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm run --recursive --stream dev"
+    "dev": "pnpm run --parallel --stream dev"
   },
   "keywords": [],
   "author": "",

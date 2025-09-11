@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -15,30 +14,24 @@ import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { submitBook, updateBook } from "@/data/books";
 import { queryClient } from "@/main";
-
-const bookSchema = z.object({
-  id: z.optional(z.number()),
-  title: z.string().min(5, {
-    message: "Title should be at least 1 character",
-  }),
-  author: z.string().min(10).max(200),
-  year: z.coerce.number(),
-});
-
-export type Book = z.infer<typeof bookSchema>;
+import {
+  createBookSchema,
+  type BookSchema,
+  type CreateBookSchema,
+} from "@books/api/schemas";
 
 interface BookFormProps {
-  book?: Book;
+  book?: BookSchema;
   onOpenChange: (open: boolean) => void;
 }
 
 function BookForm({ book, onOpenChange }: BookFormProps) {
-  const bookForm = useForm<z.infer<typeof bookSchema>>({
-    resolver: zodResolver(bookSchema),
+  const bookForm = useForm<CreateBookSchema>({
+    resolver: zodResolver(createBookSchema),
     defaultValues: {
-      id: book ? book.id : undefined,
       title: book ? book.title : "",
       author: book ? book.author : "",
+      year: book ? book.year : 2025,
     },
   });
 
@@ -62,11 +55,11 @@ function BookForm({ book, onOpenChange }: BookFormProps) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof bookSchema>) => {
-    if (values.id) {
+  const onSubmit = (values: CreateBookSchema) => {
+    if (book) {
       updateBookMutation.mutate({
+        id: book.id,
         author: values.author,
-        id: values.id,
         title: values.title,
         year: values.year,
       });
@@ -115,7 +108,14 @@ function BookForm({ book, onOpenChange }: BookFormProps) {
             <FormItem className="py-3">
               <FormLabel>Year</FormLabel>
               <FormControl>
-                <Input placeholder="1998" {...field} />
+                <Input
+                  placeholder="1998"
+                  type="number"
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(parseInt(e.target.value));
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

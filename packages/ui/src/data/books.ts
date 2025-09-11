@@ -1,42 +1,46 @@
-import type { Book } from "@/components/book-form";
+import type { AppType } from "@books/api/routes";
+import type { CreateBookSchema, UpdateBookSchema } from "@books/api/schemas";
+import { hc } from "hono/client";
 
 const BASE_URL = "http://localhost:3000";
 
+const client = hc<AppType>(BASE_URL);
+
 export const fetchBooks = async () => {
-  const request = await fetch(`${BASE_URL}/books`);
+  const request = await client.books.$get();
   const response = await request.json();
   return response;
 };
 
-export const submitBook = async (book: Book) => {
-  const request = await fetch(`${BASE_URL}/book`, {
-    method: "POST",
-    body: JSON.stringify({
+export const submitBook = async (book: CreateBookSchema) => {
+  const request = await client.books.$post({
+    json: {
       title: book.title,
       year: book.year,
       author: book.author,
-    }),
+    },
   });
+
   const response = await request.json();
   return response;
 };
 
-export const updateBook = async ({ id, ...book }: Required<Book>) => {
-  const request = await fetch(`${BASE_URL}/book/${id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      title: book.title,
-      year: book.year,
-      author: book.author,
-    }),
+export const updateBook = async (book: UpdateBookSchema) => {
+  const request = await client.books[":id"].$put({
+    param: {
+      id: book.id.toString(),
+    },
+    json: book,
   });
   const response = await request.json();
   return response;
 };
 
 export const deleteBook = async (id: number) => {
-  const request = await fetch(`${BASE_URL}/book/${id}`, {
-    method: "DELETE",
+  const request = await client.books[":id"].$delete({
+    param: {
+      id: id.toString(),
+    },
   });
   const response = await request.json();
   return response;

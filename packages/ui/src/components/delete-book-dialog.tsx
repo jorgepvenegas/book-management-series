@@ -8,13 +8,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Book } from "./book-form";
 import { useMutation } from "@tanstack/react-query";
 import { deleteBook } from "@/data/books";
 import { queryClient } from "@/main";
+import type { BookSchema } from "@books/api/schemas";
 
 interface DeleteBookDialogProps {
-  book: Book;
+  book: BookSchema;
   onOpenChange: (open: boolean) => void;
   open: boolean;
 }
