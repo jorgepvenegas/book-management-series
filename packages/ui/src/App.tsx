@@ -17,38 +17,17 @@ import { Button } from "./components/ui/button";
 import { EllipsisIcon } from "lucide-react";
 import { useState } from "react";
 import BookModal from "./components/book-modal";
-import { type Book } from "./components/book-form";
 import DeleteBookDialog from "./components/delete-book-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBooks } from "./data/books";
-
-const testData: Book[] = [
-  {
-    id: 1,
-    title: "Love in the Time of Cholera",
-    year: 2000,
-    author: "Gabriel García Márquez",
-  },
-  {
-    id: 2,
-    title: "Gulliver’s Travels",
-    year: 2000,
-    author: "Jonathan Swift",
-  },
-  {
-    id: 3,
-    title: "To the Lighthouse",
-    year: 2020,
-    author: "Virginia Woolf",
-  },
-];
+import type { BookSchema } from "@books/api/schemas";
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentBook, setCurrentBook] = useState<Book>();
+  const [currentBook, setCurrentBook] = useState<BookSchema>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const { data: books } = useQuery<Array<Book>>({
+  const { data: books } = useQuery<Array<BookSchema>>({
     queryKey: ["books"],
     queryFn: fetchBooks,
     initialData: [],
@@ -64,7 +43,7 @@ function App() {
           book={currentBook}
         />
       )}
-      <div className="w-3/4 p-8 bg-white">
+      <div className="w-full md:w-3/4 p-8 bg-white">
         <div className="flex justify-between pb-8">
           <h1 className="text-2xl">Books</h1>
           <Button

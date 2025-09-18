@@ -5,7 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import BookForm, { type Book } from "./book-form";
+import BookForm from "./book-form";
+import type { BookSchema } from "@books/api/schemas";
 
 function BookModal({
   open,
@@ -14,7 +15,7 @@ function BookModal({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  book?: Book;
+  book?: BookSchema;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
