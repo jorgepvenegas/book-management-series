@@ -21,6 +21,7 @@ import DeleteBookDialog from "./components/delete-book-dialog";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBooks } from "./data/books";
 import type { BookSchema } from "@books/api/schemas";
+import toast from "react-hot-toast";
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -45,7 +46,14 @@ function App() {
       )}
       <div className="w-full md:w-3/4 p-8 bg-white">
         <div className="flex justify-between pb-8">
-          <h1 className="text-2xl">Books</h1>
+          <h1
+            className="text-2xl"
+            onClick={() => {
+              toast("Hello World");
+            }}
+          >
+            Books
+          </h1>
           <Button
             onClick={() => {
               setModalOpen(true);

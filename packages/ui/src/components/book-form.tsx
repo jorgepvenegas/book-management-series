@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { submitBook, updateBook } from "@/data/books";
 import { queryClient } from "@/main";
+import toast from "react-hot-toast";
 import {
   createBookSchema,
   type BookSchema,
@@ -42,16 +43,24 @@ function BookForm({ book, onOpenChange }: BookFormProps) {
   const createBookMutation = useMutation({
     mutationFn: submitBook,
     onSuccess: () => {
+      toast.success("Book has been created successfully!");
       queryClient.invalidateQueries({ queryKey: ["books"] });
       onOpenChange(false);
+    },
+    onError: () => {
+      toast.error("Oops, something went wrong");
     },
   });
 
   const updateBookMutation = useMutation({
     mutationFn: updateBook,
     onSuccess: () => {
+      toast.success("Book has been updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["books"] });
       onOpenChange(false);
+    },
+    onError: () => {
+      toast.error("Oops, something went wrong");
     },
   });
 

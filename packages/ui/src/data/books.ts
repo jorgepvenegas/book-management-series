@@ -8,6 +8,10 @@ const client = hc<AppType>(BASE_URL);
 
 export const fetchBooks = async () => {
   const request = await client.books.$get();
+  if (!request.ok) {
+    const error = await request.json();
+    throw new Error(error.error);
+  }
   const response = await request.json();
   return response;
 };
@@ -21,6 +25,11 @@ export const submitBook = async (book: CreateBookSchema) => {
     },
   });
 
+  if (!request.ok) {
+    const error = await request.json();
+    throw new Error(error.error);
+  }
+
   const response = await request.json();
   return response;
 };
@@ -32,6 +41,10 @@ export const updateBook = async (book: UpdateBookSchema) => {
     },
     json: book,
   });
+  if (!request.ok) {
+    const error = await request.json();
+    throw new Error(error.error);
+  }
   const response = await request.json();
   return response;
 };
@@ -42,6 +55,10 @@ export const deleteBook = async (id: number) => {
       id: id.toString(),
     },
   });
+  if (!request.ok) {
+    const error = await request.json();
+    throw new Error(error.error);
+  }
   const response = await request.json();
   return response;
 };
