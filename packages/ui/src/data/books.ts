@@ -16,6 +16,20 @@ export const fetchBooks = async () => {
   return response;
 };
 
+export const fetchBook = async (id: number) => {
+  const request = await client.books[":id"].$get({
+    param: {
+      id: id.toString(),
+    },
+  });
+  if (!request.ok) {
+    const error = await request.json();
+    throw new Error(error.error);
+  }
+  const response = await request.json();
+  return response;
+};
+
 export const submitBook = async (book: CreateBookSchema) => {
   const request = await client.books.$post({
     json: {

@@ -29,7 +29,7 @@ const booksRoute = new Hono()
         .where(eq(booksTable.id, id))
         .limit(1);
 
-      return c.json(books, { status: 200 });
+      return c.json(books[0], { status: 200 });
     } catch (err) {
       if (err instanceof DrizzleQueryError) {
         return c.json({ error: "Database error", details: err.message }, 500);
